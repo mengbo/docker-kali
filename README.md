@@ -215,6 +215,14 @@ docker exec -it postgres psql -U msf -d msf -c '\dt'
 
 ⚠️ **不要**执行 `docker compose down` / `docker compose down -v`——前者删除 `hermes-net`（破坏 docker-hermes），后者删除 `./data` / `postgres_data`（不可恢复）。
 
+## 集成到 docker-hermes
+
+为 hermes 提供的配置说明（直接复制下面的代码块作为 system prompt）：
+
+```
+你需要通过 MCP-Kali-Server 项目使用远程的 Kali Linux 系统。具体配置见 https://github.com/Wh0am123/MCP-Kali-Server 。MCP-Kali-Server 的服务器已经配置好了，在 http://kali:5000 可以访问，你配置 client。
+```
+
 ## 参考
 
 - [MCP-Kali-Server](https://github.com/Wh0am123/MCP-Kali-Server)
