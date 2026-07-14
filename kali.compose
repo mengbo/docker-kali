@@ -1,0 +1,109 @@
+#!/bin/bash
+
+set -e
+
+up() {
+    docker compose --progress plain up -d
+    echo
+    echo "提示：首次使用请运行 ./kali.compose init-db 初始化 msf 数据库（~30s）"
+}
+
+start() {
+    docker compose start
+}
+
+stop() {
+    docker compose stop
+}
+
+restart() {
+    docker compose restart
+}
+
+status() {
+    docker compose ps
+}
+
+logs() {
+    docker compose logs -f
+}
+
+update() {
+    docker compose --progress plain build --pull --no-cache
+    docker compose --progress plain up -d
+    echo
+    echo "升级完成，当前状态："
+    docker compose ps
+}
+
+init-db() {
+    docker compose exec kali init-msf-db.sh
+}
+
+reset-db() {
+    echo "删除 postgres_data volume（msf 数据库全部丢失），但保留："
+    echo "  ./data/             (kali 用户数据)"
+    echo "  hermes-net 网络      (跨项目共享)"
+    echo "  镜像                (避免 rebuild)"
+    echo
+    echo -n "确认？[y/N]: "
+    read -r REPLY
+    if echo "$REPLY" | grep -iq "^y" ;then
+        docker compose down --volumes --remove-orphans
+        echo
+        echo "已删除 PG volume 和容器。"
+        echo "  ./kali.compose up        # 启动容器"
+        echo "  ./kali.compose init-db   # 重建 schema（~30s）"
+    fi
+}
+
+down() {
+    echo "停止容器，保留以下："
+    echo "  ./data/             (kali 用户数据)"
+    echo "  postgres_data       (msf 数据库，named volume)"
+    echo "  hermes-net 网络      (跨项目共享)"
+    echo "  镜像                (避免 rebuild)"
+    echo
+    echo -n "确认？[y/N]: "
+    read -r REPLY
+    if echo "$REPLY" | grep -iq "^y" ;then
+        docker compose stop
+        docker compose rm -f
+    fi
+}
+
+case "$1" in
+up)
+    up
+    ;;
+start)
+    start
+    ;;
+stop)
+    stop
+    ;;
+restart)
+    restart
+    ;;
+status)
+    status
+    ;;
+logs)
+    logs
+    ;;
+update)
+    update
+    ;;
+init-db)
+    init-db
+    ;;
+reset-db)
+    reset-db
+    ;;
+down)
+    down
+    ;;
+*)
+    echo $"Usage: $0 {up|start|stop|restart|status|logs|update|init-db|reset-db|down}"
+    exit 1
+esac

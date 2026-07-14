@@ -1,0 +1,39 @@
+services:
+  kali:
+    build: .
+    image: m.daocloud.io/docker.io/kalilinux/kali-rolling
+    container_name: kali
+    restart: unless-stopped
+    # ports:
+    #   - "5000:5000"
+    volumes:
+      - ./data:/root
+      - ./scripts/init-msf-db.sh:/usr/local/bin/init-msf-db.sh:ro
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - hermes-net
+      - kali-internal
+    depends_on:
+      - postgres
+
+  postgres:
+    image: m.daocloud.io/docker.io/library/postgres:18-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=msf
+      - POSTGRES_PASSWORD=msf
+      - POSTGRES_DB=msf
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - kali-internal
+
+networks:
+  hermes-net:
+    external: true
+  kali-internal:
+
+volumes:
+  postgres_data:
