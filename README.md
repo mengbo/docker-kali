@@ -220,7 +220,9 @@ docker exec -it postgres psql -U msf -d msf -c '\dt'
 为 hermes 提供的配置说明（直接复制下面的代码块作为 system prompt）：
 
 ```
-你需要通过 MCP-Kali-Server 项目使用远程的 Kali Linux 系统。具体配置见 https://github.com/Wh0am123/MCP-Kali-Server 。MCP-Kali-Server 的服务器已经配置好了，在 http://kali:5000 可以访问，你配置 client。
+你需要通过 MCP-Kali-Server 项目使用远程的 Kali Linux 系统。
+具体配置见 https://github.com/Wh0am123/MCP-Kali-Server 。
+MCP-Kali-Server 的服务器已经配置好了，在 http://kali:5000 可以访问，你配置 client。
 ```
 
 ## 参考
